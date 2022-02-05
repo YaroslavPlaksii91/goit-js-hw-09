@@ -10,15 +10,16 @@ const options = {
   minuteIncrement: 1,
   onClose(selectedDates) {
     console.log(selectedDates[0]);
+    selectedDate = selectedDates[0];
 
-    if (selectedDates[0] < options.defaultDate) {
+    if (selectedDate < options.defaultDate) {
       Notify.failure('Please choose a date in the future');
       return;
     }
     startBtn.removeAttribute('disabled');
-    localStorage.setItem('timer-selected-time', selectedDates[0].getTime());
   },
 };
+let selectedDate;
 let intervalId = null;
 
 flatpickr('#datetime-picker', options);
@@ -27,14 +28,12 @@ startBtn.setAttribute('disabled', true);
 startBtn.addEventListener('click', onStartBtnClick);
 
 function onStartBtnClick() {
-  const selectedTime = localStorage.getItem('timer-selected-time');
-
   intervalId = setInterval(() => {
     const currentTime = Date.now();
-    const deltaTime = selectedTime - currentTime;
+    const deltaTime = selectedDate - currentTime;
     const timeComponents = convertMs(deltaTime);
 
-    if (selectedTime <= currentTime) {
+    if (selectedDate <= currentTime) {
       clearInterval(intervalId);
       return;
     }
